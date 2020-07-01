@@ -10,7 +10,20 @@ namespace BlueModas.Infra.Data.Context
     {
         public BlueModasContext(DbContextOptions<BlueModasContext> options) : base(options) { }
 
-        public DbSet<Cliente> Cliente { get; set; }
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            modelBuilder.Entity<CestaProduto>()
+                .HasKey(x => new { x.IdCesta, x.IdProduto });            
+            
+            modelBuilder.Entity<PedidoProduto>()
+                .HasKey(x => new { x.IdPedido, x.IdProduto });
+        }
 
+        public DbSet<Cliente> Cliente { get; set; }
+        public DbSet<Produto> Produto { get; set; }
+        public DbSet<Cesta> Cesta { get; set; }
+        public DbSet<Pedido> Pedido { get; set; }
+        public DbSet<CestaProduto> CestaProduto { get; set; }
+        public DbSet<PedidoProduto> PedidoProduto { get; set; }
     }
 }

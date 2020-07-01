@@ -15,4 +15,4 @@ VALUES
 
 select a.* from Cliente a;
 
-delete Cliente
+--delete Cliente

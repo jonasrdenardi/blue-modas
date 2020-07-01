@@ -1,0 +1,8 @@
+CREATE TABLE Pedido(
+Id			INT IDENTITY(1,1),
+IdCliente	INT,
+DataCriacao DATETIME,
+	CONSTRAINT PK_Pedido PRIMARY KEY(Id),
+	CONSTRAINT FK_Pedido_IdCliente FOREIGN KEY(IdCliente) 
+		REFERENCES Cliente (Id)
+);

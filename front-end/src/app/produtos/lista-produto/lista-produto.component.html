@@ -1,0 +1,32 @@
+<div class="container main-container">
+
+    <div class="row text-center">
+        <div *ngFor="let produto of produtos" class="col-md-3" style="padding-bottom: 30px;">
+            <div class="card h-100">
+                <img class="card-img-top" src="{{'data:image/jpg;base64,' + produto.imagem}}" height="150px"  width="150px" alt="">
+                <div class="card-body">
+                    <h5 class="card-title">{{ produto.descricao | titlecase}}</h5>
+                    <p class="card-text">{{ produto.valor | currency:'BRL': 'symbol':'1.2-2':'pt' }}</p>
+                    <div class="input-group mb-2" style="justify-content: center;">
+                        <a class="btn btn-primary" (click)="diminuir(produto.id)">
+                            <span class="fa fa-minus" style="color: white;"></span>
+                        </a>
+                        <div>
+                            <input id="{{produto.id}}" value="0" type="number" class="form-control quantidade" >
+                        </div>
+                        <a class="btn btn-primary" (click)="aumentar(produto.id)">
+                            <span class="fa fa-plus" style="color: white;"></span>
+                        </a>
+                        &nbsp;
+                        <a class="btn btn-primary" (click)="addCesta(produto)" style="color: white;">
+                            <span class="fa fa-shopping-cart"></span>
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+    </div>
+
+</div>

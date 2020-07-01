@@ -1,0 +1,7 @@
+CREATE TABLE Cesta(
+Id			INT IDENTITY(1,1),
+IdCliente	INT,
+	CONSTRAINT PK_Cesta PRIMARY KEY(Id),
+	CONSTRAINT FK_Cesta_IdCliente FOREIGN KEY(IdCliente) 
+		REFERENCES Cliente (Id)
+);
