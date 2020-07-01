@@ -1,3 +1,3 @@
-<app-menu [cesta]="cesta"></app-menu>
-<app-lista-produto (produtoAdd)="addCesta()"></app-lista-produto>
-<app-footer></app-footer>
+<app-menu [cestaProdutos]="cestaAC"></app-menu>
+<router-outlet (produtoAdd)="addCesta($event)"></router-outlet>
+<!-- <app-lista-produto (produtoAdd)="addCesta($event)"></app-lista-produto> -->

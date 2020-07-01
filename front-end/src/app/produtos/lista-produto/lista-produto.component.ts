@@ -53,7 +53,7 @@ export class ListaProdutoComponent implements OnInit {
   }
 
   addCesta(produto : Produto){
-    this.produtoAdd.emit(Produto);
+    this.produtoAdd.emit(produto);
   }
 
 }

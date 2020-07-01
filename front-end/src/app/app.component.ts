@@ -7,12 +7,11 @@ import { Produto } from 'src/produtos/produto';
 })
 export class AppComponent {
   
-  public cesta: number = 0;
+  public cestaAC: Produto[] = [];
 
   title = 'Blue Modas';
 
-  addCesta(){
-    this.cesta++;
-    console.log(this.cesta);
+  addCesta(produtoCesta : Produto){
+    this.cestaAC.push(produtoCesta)
   }
 }

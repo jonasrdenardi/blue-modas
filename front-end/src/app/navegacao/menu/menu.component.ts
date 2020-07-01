@@ -7,6 +7,6 @@ import { Produto } from 'src/produtos/produto';
 })
 export class MenuComponent{
    
-  @Input() cesta : number;
+  @Input() cestaProdutos : Produto[] = [];
 
 }
