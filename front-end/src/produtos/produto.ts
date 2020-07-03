@@ -1,6 +1,6 @@
 export class Produto{
-    Id: string;
+    Id: number;
     Descricao: string;
-    Valor: string;
+    Valor: number;
     Imagem: FileReader;
 }

@@ -1,0 +1,19 @@
+<div class="container main-container">
+
+    <form>
+        <div class="form-group">
+            <label for="nome">Nome</label>
+            <input type="text" [(ngModel)]="nome" name="nomeCliente" class="form-control" id="nome" placeholder="Seu nome">
+        </div>
+        <div class="form-group">
+            <label for="email">E-mail</label>
+            <input type="email" [(ngModel)]="email" name="emailCliente" class="form-control" id="email" placeholder="Seu email">
+        </div>
+        <div class="form-group">
+            <label for="telefone">Telefone</label>
+            <input type="text" [(ngModel)]="telefone" name="telefoneCliente" class="form-control" id="telefone" placeholder="Seu telefone">
+        </div>
+        <button type="submit" (click)="efetivarPedido()" class="btn btn-primary">Efetivar Pedido</button>
+    </form>
+
+</div>

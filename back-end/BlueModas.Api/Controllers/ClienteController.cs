@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using BlueModas.Domain.Entities;
 using BlueModas.Infra.Data.Context;
+using Newtonsoft.Json;
 
 namespace BlueModas.Api.Controllers
 {
@@ -46,17 +47,16 @@ namespace BlueModas.Api.Controllers
         // To protect from overposting attacks, enable the specific properties you want to bind to, for
         // more details, see https://go.microsoft.com/fwlink/?linkid=2123754.
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutCliente(int id, Cliente cliente)
+        public async Task<ActionResult<string>> PutCliente(int id, Cliente cliente)
         {
             if (id != cliente.Id)
             {
                 return BadRequest();
             }
 
-            _context.Entry(cliente).State = EntityState.Modified;
-
             try
             {
+                _context.Entry(cliente).State = EntityState.Modified;
                 await _context.SaveChangesAsync();
             }
             catch (DbUpdateConcurrencyException)
@@ -71,19 +71,30 @@ namespace BlueModas.Api.Controllers
                 }
             }
 
-            return NoContent();
+            return JsonConvert.SerializeObject(cliente);
         }
 
         // POST: api/Cliente
         // To protect from overposting attacks, enable the specific properties you want to bind to, for
         // more details, see https://go.microsoft.com/fwlink/?linkid=2123754.
         [HttpPost]
-        public async Task<ActionResult<Cliente>> PostCliente(Cliente cliente)
+        public async Task<ActionResult<string>> PostCliente(Cliente cliente)
         {
-            _context.Cliente.Add(cliente);
-            await _context.SaveChangesAsync();
+            var clienteExist = ClienteExists(cliente.Email);
 
-            return CreatedAtAction("GetCliente", new { id = cliente.Id }, cliente);
+            if (clienteExist != null)
+            {
+                clienteExist.Telefone = cliente.Telefone;
+                await PutCliente(clienteExist.Id, clienteExist);
+                return JsonConvert.SerializeObject(clienteExist);
+            }
+            else
+            {
+                _context.Cliente.Add(cliente);
+                await _context.SaveChangesAsync();
+                return JsonConvert.SerializeObject(cliente);
+            }
+
         }
 
         // DELETE: api/Cliente/5
@@ -105,6 +116,10 @@ namespace BlueModas.Api.Controllers
         private bool ClienteExists(int id)
         {
             return _context.Cliente.Any(e => e.Id == id);
+        }
+        private Cliente ClienteExists(string email)
+        {
+            return _context.Cliente.Where(e => e.Email.Equals(email)).FirstOrDefault();
         }
     }
 }

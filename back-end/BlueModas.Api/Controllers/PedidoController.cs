@@ -7,9 +7,12 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using BlueModas.Domain.Entities;
 using BlueModas.Infra.Data.Context;
+using BlueModas.Domain.DTOs;
+using Newtonsoft.Json;
 
 namespace BlueModas.Api.Controllers
 {
+    [Route("api/[controller]/[action]")]
     [Route("api/[controller]")]
     [ApiController]
     public class PedidoController : ControllerBase
@@ -100,6 +103,25 @@ namespace BlueModas.Api.Controllers
             await _context.SaveChangesAsync();
 
             return pedido;
+        }
+
+        // POST: api/Pedido/PedidoCompleto
+        [HttpPost]
+        public async Task<ActionResult<string>> PedidoCompleto(DTO_PedidoCompleto pc)
+        {
+
+            _context.Pedido.Add(pc.Pedido);
+            await _context.SaveChangesAsync();
+
+            foreach (var pp in pc.PedidoProduto)
+            {
+                pp.IdPedido = pc.Pedido.Id;
+            }
+            _context.PedidoProduto.AddRange(pc.PedidoProduto);
+            await _context.SaveChangesAsync();
+
+            return JsonConvert.SerializeObject(pc);
+
         }
 
         private bool PedidoExists(int id)

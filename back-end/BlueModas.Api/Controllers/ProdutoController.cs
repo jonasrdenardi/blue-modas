@@ -8,6 +8,8 @@ using Microsoft.EntityFrameworkCore;
 using BlueModas.Domain.Entities;
 using BlueModas.Infra.Data.Context;
 using Microsoft.AspNetCore.Cors;
+using Newtonsoft.Json;
+using BlueModas.Domain.DTOs;
 
 namespace BlueModas.Api.Controllers
 {
@@ -24,14 +26,16 @@ namespace BlueModas.Api.Controllers
 
         // GET: api/Produto
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Produto>>> GetProduto()
+        public async Task<ActionResult<string>> GetProduto()
         {
-            return await _context.Produto.ToListAsync();
+            var produtos = await _context.Produto.ToListAsync();
+
+            return JsonConvert.SerializeObject(produtos);
         }
 
         // GET: api/Produto/5
         [HttpGet("{id}")]
-        public async Task<ActionResult<Produto>> GetProduto(int id)
+        public async Task<ActionResult<string>> GetProduto(int id)
         {
             var produto = await _context.Produto.FindAsync(id);
 
@@ -40,7 +44,7 @@ namespace BlueModas.Api.Controllers
                 return NotFound();
             }
 
-            return produto;
+            return JsonConvert.SerializeObject(produto);
         }
 
         // PUT: api/Produto/5

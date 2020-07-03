@@ -3,23 +3,23 @@
     <div class="row text-center">
         <div *ngFor="let produto of produtos" class="col-md-3" style="padding-bottom: 30px;">
             <div class="card h-100">
-                <img class="card-img-top" src="{{'data:image/jpg;base64,' + produto.imagem}}" height="150px"  width="150px" alt="">
+                <img class="card-img-top" src="{{'data:image/jpg;base64,' + produto.Imagem}}" height="150px"  width="150px" alt="">
                 <div class="card-body">
-                    <h5 class="card-title">{{ produto.descricao | titlecase}}</h5>
-                    <p class="card-text">{{ produto.valor | currency:'BRL': 'symbol':'1.2-2':'pt' }}</p>
+                    <h5 class="card-title">{{ produto.Descricao | titlecase}}</h5>
+                    <p class="card-text">{{ produto.Valor | currency:'BRL': 'symbol':'1.2-2':'pt' }}</p>
                     <div class="input-group mb-2" style="justify-content: center;">
-                        <a class="btn btn-primary" (click)="diminuir(produto.id)">
+                        <a class="btn btn-primary" (click)="diminuir(produto.Id)">
                             <span class="fa fa-minus" style="color: white;"></span>
                         </a>
                         <div>
-                            <input id="{{produto.id}}" value="0" type="number" class="form-control quantidade" >
+                            <input id="{{produto.Id}}" value="0" type="number" class="form-control quantidade" >
                         </div>
-                        <a class="btn btn-primary" (click)="aumentar(produto.id)">
+                        <a class="btn btn-primary" (click)="aumentar(produto.Id)">
                             <span class="fa fa-plus" style="color: white;"></span>
                         </a>
                         &nbsp;
-                        <a class="btn btn-primary" (click)="addCesta(produto)" style="color: white;">
-                            <span class="fa fa-shopping-cart"></span>
+                        <a class="btn btn-primary"style="color: white;">
+                            <span class="fa fa-shopping-cart" (click)="addCesta(produto)"></span>
                         </a>
                     </div>
                 </div>

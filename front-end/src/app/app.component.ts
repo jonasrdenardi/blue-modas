@@ -7,11 +7,6 @@ import { Produto } from 'src/produtos/produto';
 })
 export class AppComponent {
   
-  public cestaAC: Produto[] = [];
-
   title = 'Blue Modas';
 
-  addCesta(produtoCesta : Produto){
-    this.cestaAC.push(produtoCesta)
-  }
 }

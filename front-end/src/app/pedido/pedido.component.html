@@ -1,0 +1,48 @@
+<div class="container main-container">
+
+    <h2>Pedido {{dtoPP.Pedido.Id}}</h2> <br>
+
+    <table class="table table-hover">
+        <thead>
+            <tr>
+                <th scope="col">Nome</th>
+                <th scope="col">Email</th>
+                <th scope="col">Telefone</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>{{cliente.Nome}}</td>
+                <td>{{cliente.Email}}</td>
+                <td>{{cliente.Telefone}}</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <table class="table table-hover">
+        <caption style="font-weight: bold; color: black;"> Total do Pedido:
+            {{getTotalPedido() | currency:'BRL': 'symbol':'1.2-2':'pt' }}</caption>
+        <thead>
+            <tr>
+                <th scope="col"></th>
+                <th scope="col">Cód. Produto</th>
+                <th scope="col">Descrição</th>
+                <th scope="col">Quantidade</th>
+                <th scope="col">Valor Un</th>
+                <th scope="col">Valor Total</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr *ngFor="let pp of dtoPP.PedidoProduto">
+                <td> <img src="{{'data:image/jpg;base64,' + getImagem(pp.IdProduto)}}" height="35px" width="35px"
+                        alt=""></td>
+                <td>{{pp.IdProduto}}</td>
+                <td>{{getDescricao(pp.IdProduto)}}</td>
+                <td>{{pp.Quantidade}}</td>
+                <td>{{getValorUn(pp.IdProduto) | currency:'BRL': 'symbol':'1.2-2':'pt' }}</td>
+                <td>{{getTotalProduto(pp) | currency:'BRL': 'symbol':'1.2-2':'pt' }} </td>
+            </tr>
+        </tbody>
+    </table>
+
+</div>

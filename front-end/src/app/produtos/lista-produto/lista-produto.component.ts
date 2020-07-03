@@ -1,7 +1,10 @@
-import { Component, OnInit, Output, EventEmitter } from '@angular/core';
+import { Component, OnInit, EventEmitter } from '@angular/core';
 import { Produto } from 'src/produtos/produto';
 import { ProdutoService } from 'src/produtos/produtos.service';
 import { error } from '@angular/compiler/src/util';
+
+import { CestaService } from "src/app/cesta/cesta.service";
+import { CestaProduto } from 'src/cestaProduto/cestaProduto';
 
 @Component({
   selector: 'app-lista-produto',
@@ -14,14 +17,12 @@ export class ListaProdutoComponent implements OnInit {
 
   public produtos: Produto[];
   // public cesta: number = 0;
-  @Output() produtoAdd = new EventEmitter();
 
   ngOnInit(): void {
     this.produtoService.obterProdutos()
       .subscribe(
         produtos => {
           this.produtos = produtos;
-          console.log(produtos);
         },
         error => console.log(error)
       );
@@ -35,25 +36,18 @@ export class ListaProdutoComponent implements OnInit {
   diminuir(idProduto : string){
     var qtd = Number((<HTMLSelectElement>document.getElementById(idProduto)).value);
     if(qtd > 0){
-      (<HTMLSelectElement>document.getElementById(idProduto)).value = String(++qtd);
+      (<HTMLSelectElement>document.getElementById(idProduto)).value = String(--qtd);
     }
     
   }
 
-   adicionarNaCesta(idProduto : string){
-     var el = (<HTMLSelectElement>document.getElementById(idProduto));
-    var qtd = Number(el.value);
-
-    if(qtd > 0){
-      el.value = String(++qtd);
-    }
-
-    // this.cesta += Number(el.value);
-    el.value = "0";
-  }
-
   addCesta(produto : Produto){
-    this.produtoAdd.emit(produto);
+    var el = (<HTMLSelectElement>document.getElementById(String(produto.Id)));
+    var qtd = Number(el.value);
+    var cestaProduto = new CestaProduto();
+    cestaProduto.IdProduto = produto.Id;
+    cestaProduto.Quantidade = qtd;
+    CestaService.addCestaProduto(produto, cestaProduto);
   }
 
 }

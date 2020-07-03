@@ -1,0 +1,72 @@
+<div class="container main-container">
+
+    <button class="btn btn-primary" [routerLink]="'/cliente'"> Informar dados do Pedido </button> <br> <br>
+
+    <table class="table table-hover">
+        <thead>
+            <tr>
+                <th scope="col"></th>
+                <th scope="col">Cód. Produto</th>
+                <th scope="col">Descrição</th>
+                <th scope="col">Quantidade</th>
+                <th scope="col"></th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr *ngFor="let pc of produtosCesta">
+                <td> <img src="{{'data:image/jpg;base64,' + getImagem(pc.IdProduto)}}" height="35px" width="35px"
+                        alt=""></td>
+                <td>{{ pc.IdProduto}}</td>
+                <td>{{getDescricao(pc.IdProduto)}}</td>
+                <td>
+                    <div class="input-group mb-2">
+                        <a class="btn btn-primary" (click)="diminuir(pc.IdProduto)">
+                            <span class="fa fa-minus" style="color: white;"></span>
+                        </a>
+                        <div>
+                            <input id="{{pc.IdProduto}}" value="{{pc.Quantidade}}" type="number"
+                                class="form-control quantidade">
+                        </div>
+                        <a class="btn btn-primary" (click)="aumentar(pc.IdProduto)">
+                            <span class="fa fa-plus" style="color: white;"></span>
+                        </a>
+                        &nbsp;
+                        <a class="btn btn-primary" (click)="atualizar(pc)" style="color: white;">
+                            <span class="fa fa-refresh "></span>
+                        </a>
+                    </div>
+                </td>
+                <td>
+                    <div class="input-group mb-2">
+                        <a class="btn btn-danger" (click)="remover(pc)" style="color: white;">
+                            <span class="fa fa-times"></span>
+                        </a>
+                    </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+
+</div>
+
+
+
+<style>
+    input::-webkit-outer-spin-button,
+    input::-webkit-inner-spin-button {
+        /* display: none; <- Crashes Chrome on hover */
+        -webkit-appearance: none;
+        margin: 0;
+        /* <-- Apparently some margin are still there even though it's hidden */
+    }
+
+    input[type=number] {
+        -moz-appearance: textfield;
+        /* Firefox */
+    }
+
+    .quantidade {
+        width: 60px;
+        text-align: center;
+    }
+</style>

@@ -8,5 +8,3 @@ Quantidade		INT,
 	CONSTRAINT FK_CestaProduto_IdProduto FOREIGN KEY(IdProduto)
 		REFERENCES Produto(Id)
 );
-
-DROP TABLE CestaProduto;
