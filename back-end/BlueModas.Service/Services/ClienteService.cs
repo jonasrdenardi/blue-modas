@@ -31,7 +31,7 @@ namespace BlueModas.Services.Services
             else
             {
                 clienteExist.Nome = obj.Nome;
-                clienteExist.Telefone = obj.Email;
+                clienteExist.Telefone = obj.Telefone;
                 _repository.Save(clienteExist);
                 return clienteExist;
             }
