@@ -10,6 +10,7 @@ using BlueModas.Infra.Data.Context;
 using Microsoft.AspNetCore.Cors;
 using Newtonsoft.Json;
 using BlueModas.Domain.DTOs;
+using BlueModas.Domain.Interfaces;
 
 namespace BlueModas.Api.Controllers
 {
@@ -17,99 +18,68 @@ namespace BlueModas.Api.Controllers
     [ApiController]
     public class ProdutoController : ControllerBase
     {
-        private readonly BlueModasContext _context;
+        private readonly IServiceProduto _serviceProduto;
 
-        public ProdutoController(BlueModasContext context)
+        public ProdutoController(IServiceProduto service)
         {
-            _context = context;
+            _serviceProduto = service;
         }
 
         // GET: api/Produto
         [HttpGet]
-        public async Task<ActionResult<string>> GetProduto()
+        public IActionResult GetProduto()
         {
-            var produtos = await _context.Produto.ToListAsync();
-
-            return JsonConvert.SerializeObject(produtos);
+            return Ok(_serviceProduto.GetAll());
         }
 
         // GET: api/Produto/5
         [HttpGet("{id}")]
-        public async Task<ActionResult<string>> GetProduto(int id)
+        public ActionResult GetProduto(int id)
         {
-            var produto = await _context.Produto.FindAsync(id);
+            var produto = _serviceProduto.GetById(id);
 
             if (produto == null)
-            {
                 return NotFound();
-            }
 
-            return JsonConvert.SerializeObject(produto);
+            return Ok(produto);
         }
 
         // PUT: api/Produto/5
         // To protect from overposting attacks, enable the specific properties you want to bind to, for
         // more details, see https://go.microsoft.com/fwlink/?linkid=2123754.
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutProduto(int id, Produto produto)
+        public IActionResult PutProduto(Produto produto)
         {
-            if (id != produto.Id)
-            {
+            if (produto == null)
                 return BadRequest();
-            }
 
-            _context.Entry(produto).State = EntityState.Modified;
+            produto = _serviceProduto.Update(produto);
 
-            try
-            {
-                await _context.SaveChangesAsync();
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                if (!ProdutoExists(id))
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
-            }
-
-            return NoContent();
+            return Ok(produto);
         }
 
         // POST: api/Produto
         // To protect from overposting attacks, enable the specific properties you want to bind to, for
         // more details, see https://go.microsoft.com/fwlink/?linkid=2123754.
         [HttpPost]
-        public async Task<ActionResult<Produto>> PostProduto(Produto produto)
+        public IActionResult PostProduto(Produto produto)
         {
-            _context.Produto.Add(produto);
-            await _context.SaveChangesAsync();
+            if (produto == null)
+                return BadRequest();
 
-            return CreatedAtAction("GetProduto", new { id = produto.Id }, produto);
+            produto = _serviceProduto.Insert(produto);
+
+            return Ok(produto);
         }
 
         // DELETE: api/Produto/5
         [HttpDelete("{id}")]
-        public async Task<ActionResult<Produto>> DeleteProduto(int id)
+        public IActionResult DeleteProduto(int id)
         {
-            var produto = await _context.Produto.FindAsync(id);
-            if (produto == null)
-            {
-                return NotFound();
-            }
+            _serviceProduto.Delete(id);
 
-            _context.Produto.Remove(produto);
-            await _context.SaveChangesAsync();
-
-            return produto;
+            return NoContent();
         }
 
-        private bool ProdutoExists(int id)
-        {
-            return _context.Produto.Any(e => e.Id == id);
-        }
     }
 }

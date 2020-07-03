@@ -5,5 +5,8 @@ using System.Text;
 
 namespace BlueModas.Domain.Interfaces
 {
-    public interface IRepositoryCliente : IBaseRepository<Cliente> {}
+    public interface IRepositoryCliente : IBaseRepository<Cliente>
+    {
+        Cliente GetByEmail(string email);
+    }
 }

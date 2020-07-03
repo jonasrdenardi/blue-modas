@@ -22,6 +22,12 @@ export class ClienteComponent implements OnInit {
   }
 
   efetivarPedido(){
+
+    if(!this.nome || !this.email || !this.telefone){
+      alert("Preencha todos os campos!");
+      return;
+    }
+
     var cliente = new Cliente();
     cliente.Nome = this.nome;
     cliente.Email = this.email;

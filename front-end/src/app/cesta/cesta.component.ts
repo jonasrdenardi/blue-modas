@@ -62,4 +62,17 @@ export class CestaComponent implements OnInit {
     CestaService.RemoveCestaProduto(cestaProduto);
   }
 
+  getValorUn(idProduto: number) {
+    return this.produtos.find(x => x.Id == idProduto).Valor;
+  }
+
+  getTotalCesta() {    
+    return this.produtosCesta.reduce((soma, pc) => soma + this.getTotalProduto(pc), 0);
+  }
+
+  getTotalProduto(pc: CestaProduto) {
+    return this.produtos.find(x => x.Id == pc.IdProduto).Valor * pc.Quantidade;
+  }
+
+
 }

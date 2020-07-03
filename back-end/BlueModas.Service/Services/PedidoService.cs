@@ -1,4 +1,5 @@
-﻿using BlueModas.Domain.Entities;
+﻿using BlueModas.Domain.DTOs;
+using BlueModas.Domain.Entities;
 using BlueModas.Domain.Interfaces;
 using System;
 using System.Collections.Generic;
@@ -27,6 +28,13 @@ namespace BlueModas.Services.Services
         public Pedido Update(Pedido obj)
         {
             _repository.Save(obj);
+            return obj;
+        }
+
+        public DTO_PedidoCompleto InsertPedidoCompleto(DTO_PedidoCompleto obj)
+        {
+            _repository.InsertPedidoCompleto(obj);
+
             return obj;
         }
     }

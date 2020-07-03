@@ -8,6 +8,7 @@ using Microsoft.EntityFrameworkCore;
 using BlueModas.Domain.Entities;
 using BlueModas.Infra.Data.Context;
 using Newtonsoft.Json;
+using BlueModas.Domain.Interfaces;
 
 namespace BlueModas.Api.Controllers
 {
@@ -15,111 +16,68 @@ namespace BlueModas.Api.Controllers
     [ApiController]
     public class ClienteController : ControllerBase
     {
-        private readonly BlueModasContext _context;
+        private readonly IServiceCliente _serviceCliente;
 
-        public ClienteController(BlueModasContext context)
+        public ClienteController(IServiceCliente service)
         {
-            _context = context;
+            _serviceCliente = service;
         }
 
         // GET: api/Cliente
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Cliente>>> GetCliente()
+        public IActionResult GetCliente()
         {
-            return await _context.Cliente.ToListAsync();
+            return Ok(_serviceCliente.GetAll());
         }
 
         // GET: api/Cliente/5
         [HttpGet("{id}")]
-        public async Task<ActionResult<Cliente>> GetCliente(int id)
+        public IActionResult GetCliente(int id)
         {
-            var cliente = await _context.Cliente.FindAsync(id);
+            var cliente = _serviceCliente.GetById(id);
 
             if (cliente == null)
-            {
                 return NotFound();
-            }
 
-            return cliente;
+            return Ok(cliente);
         }
 
         // PUT: api/Cliente/5
         // To protect from overposting attacks, enable the specific properties you want to bind to, for
         // more details, see https://go.microsoft.com/fwlink/?linkid=2123754.
         [HttpPut("{id}")]
-        public async Task<ActionResult<string>> PutCliente(int id, Cliente cliente)
+        public IActionResult PutCliente(Cliente cliente)
         {
-            if (id != cliente.Id)
-            {
+            if (cliente == null)
                 return BadRequest();
-            }
 
-            try
-            {
-                _context.Entry(cliente).State = EntityState.Modified;
-                await _context.SaveChangesAsync();
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                if (!ClienteExists(id))
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
-            }
+            cliente =_serviceCliente.Update(cliente);
 
-            return JsonConvert.SerializeObject(cliente);
+            return Ok(cliente);
         }
 
         // POST: api/Cliente
         // To protect from overposting attacks, enable the specific properties you want to bind to, for
         // more details, see https://go.microsoft.com/fwlink/?linkid=2123754.
         [HttpPost]
-        public async Task<ActionResult<string>> PostCliente(Cliente cliente)
+        public IActionResult PostCliente(Cliente cliente)
         {
-            var clienteExist = ClienteExists(cliente.Email);
+            if (cliente == null)
+                return BadRequest();
 
-            if (clienteExist != null)
-            {
-                clienteExist.Telefone = cliente.Telefone;
-                await PutCliente(clienteExist.Id, clienteExist);
-                return JsonConvert.SerializeObject(clienteExist);
-            }
-            else
-            {
-                _context.Cliente.Add(cliente);
-                await _context.SaveChangesAsync();
-                return JsonConvert.SerializeObject(cliente);
-            }
+            cliente = _serviceCliente.Insert(cliente);
 
+            return Ok(cliente);
         }
 
         // DELETE: api/Cliente/5
         [HttpDelete("{id}")]
-        public async Task<ActionResult<Cliente>> DeleteCliente(int id)
+        public IActionResult DeleteCliente(int id)
         {
-            var cliente = await _context.Cliente.FindAsync(id);
-            if (cliente == null)
-            {
-                return NotFound();
-            }
+            _serviceCliente.Delete(id);
 
-            _context.Cliente.Remove(cliente);
-            await _context.SaveChangesAsync();
-
-            return cliente;
+            return NoContent();
         }
 
-        private bool ClienteExists(int id)
-        {
-            return _context.Cliente.Any(e => e.Id == id);
-        }
-        private Cliente ClienteExists(string email)
-        {
-            return _context.Cliente.Where(e => e.Email.Equals(email)).FirstOrDefault();
-        }
     }
 }

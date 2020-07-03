@@ -9,6 +9,7 @@ using BlueModas.Domain.Entities;
 using BlueModas.Infra.Data.Context;
 using BlueModas.Domain.DTOs;
 using Newtonsoft.Json;
+using BlueModas.Domain.Interfaces;
 
 namespace BlueModas.Api.Controllers
 {
@@ -17,116 +18,80 @@ namespace BlueModas.Api.Controllers
     [ApiController]
     public class PedidoController : ControllerBase
     {
-        private readonly BlueModasContext _context;
+        private readonly IServicePedido _servicePedido;
 
-        public PedidoController(BlueModasContext context)
+        public PedidoController(IServicePedido service)
         {
-            _context = context;
+            _servicePedido = service;
         }
 
         // GET: api/Pedido
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Pedido>>> GetPedido()
+        public ActionResult GetPedido()
         {
-            return await _context.Pedido.ToListAsync();
+            return Ok(_servicePedido.GetAll());
         }
 
         // GET: api/Pedido/5
         [HttpGet("{id}")]
-        public async Task<ActionResult<Pedido>> GetPedido(int id)
+        public IActionResult GetPedido(int id)
         {
-            var pedido = await _context.Pedido.FindAsync(id);
+            var pedido = _servicePedido.GetById(id);
 
             if (pedido == null)
-            {
                 return NotFound();
-            }
 
-            return pedido;
+            return Ok(pedido);
         }
 
         // PUT: api/Pedido/5
         // To protect from overposting attacks, enable the specific properties you want to bind to, for
         // more details, see https://go.microsoft.com/fwlink/?linkid=2123754.
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutPedido(int id, Pedido pedido)
+        public IActionResult PutPedido(Pedido pedido)
         {
-            if (id != pedido.Id)
-            {
+            if (pedido == null)
                 return BadRequest();
-            }
 
-            _context.Entry(pedido).State = EntityState.Modified;
+            pedido = _servicePedido.Update(pedido);
 
-            try
-            {
-                await _context.SaveChangesAsync();
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                if (!PedidoExists(id))
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
-            }
-
-            return NoContent();
+            return Ok(pedido);
         }
 
         // POST: api/Pedido
         // To protect from overposting attacks, enable the specific properties you want to bind to, for
         // more details, see https://go.microsoft.com/fwlink/?linkid=2123754.
         [HttpPost]
-        public async Task<ActionResult<Pedido>> PostPedido(Pedido pedido)
+        public IActionResult PostPedido(Pedido pedido)
         {
-            _context.Pedido.Add(pedido);
-            await _context.SaveChangesAsync();
+            if (pedido == null)
+                return BadRequest();
 
-            return CreatedAtAction("GetPedido", new { id = pedido.Id }, pedido);
+            pedido =_servicePedido.Insert(pedido);
+
+            return Ok(pedido);
         }
 
         // DELETE: api/Pedido/5
         [HttpDelete("{id}")]
-        public async Task<ActionResult<Pedido>> DeletePedido(int id)
+        public IActionResult DeletePedido(int id)
         {
-            var pedido = await _context.Pedido.FindAsync(id);
-            if (pedido == null)
-            {
-                return NotFound();
-            }
+            _servicePedido.Delete(id);
 
-            _context.Pedido.Remove(pedido);
-            await _context.SaveChangesAsync();
-
-            return pedido;
+            return NoContent();
         }
 
         // POST: api/Pedido/PedidoCompleto
         [HttpPost]
-        public async Task<ActionResult<string>> PedidoCompleto(DTO_PedidoCompleto pc)
+        public IActionResult PedidoCompleto(DTO_PedidoCompleto pc)
         {
+            if (pc == null)
+                return BadRequest();
 
-            _context.Pedido.Add(pc.Pedido);
-            await _context.SaveChangesAsync();
+            pc =_servicePedido.InsertPedidoCompleto(pc);
 
-            foreach (var pp in pc.PedidoProduto)
-            {
-                pp.IdPedido = pc.Pedido.Id;
-            }
-            _context.PedidoProduto.AddRange(pc.PedidoProduto);
-            await _context.SaveChangesAsync();
-
-            return JsonConvert.SerializeObject(pc);
-
+            return Ok(pc);
         }
 
-        private bool PedidoExists(int id)
-        {
-            return _context.Pedido.Any(e => e.Id == id);
-        }
     }
 }

@@ -2,7 +2,10 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using BlueModas.Domain.Interfaces;
 using BlueModas.Infra.Data.Context;
+using BlueModas.Infra.Data.Repository;
+using BlueModas.Services.Services;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
@@ -13,6 +16,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using Newtonsoft.Json.Serialization;
 
 namespace BlueModas.Api
 {
@@ -28,6 +32,18 @@ namespace BlueModas.Api
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddControllers().AddNewtonsoftJson(options => {options.SerializerSettings.ContractResolver = new DefaultContractResolver();});
+
+            services.AddTransient<IServiceCliente, ClienteService>();
+            services.AddTransient<IServiceProduto, ProdutoService>();
+            services.AddTransient<IServiceCesta, CestaService>();
+            services.AddTransient<IServicePedido, PedidoService>();
+
+            services.AddTransient<IRepositoryCliente, ClienteRepository>();
+            services.AddTransient<IRepositoryProduto, ProdutoRepository>();
+            services.AddTransient<IRepositoryCesta, CestaRepository>();
+            services.AddTransient<IRepositoryPedido, PedidoRepository>();
+
             services.AddCors(options =>
             {
                 options.AddPolicy("EnableCORS", builder =>
@@ -35,7 +51,6 @@ namespace BlueModas.Api
                     builder.WithOrigins("http://localhost:4200").AllowAnyOrigin().AllowAnyHeader().AllowAnyMethod().Build();
                 });
             });
-            services.AddControllers();
             services.AddDbContext<BlueModasContext>(options => options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
             services.AddControllers().AddNewtonsoftJson();
         }

@@ -3,6 +3,7 @@ using BlueModas.Domain.Interfaces;
 using BlueModas.Infra.Data.Context;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 
 namespace BlueModas.Infra.Data.Repository
@@ -22,6 +23,8 @@ namespace BlueModas.Infra.Data.Repository
         }
 
         public Cliente GetById(int id) => base.Select(id);
+
+        public Cliente GetByEmail(string email) => _blueModasContext.Cliente.FirstOrDefault(x => x.Email.Equals(email));
 
         public IList<Cliente> GetAll() => base.Select();
 

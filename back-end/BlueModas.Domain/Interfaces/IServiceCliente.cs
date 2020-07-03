@@ -5,5 +5,8 @@ using System.Text;
 
 namespace BlueModas.Domain.Interfaces
 {
-    public interface IServiceCliente : IBaseService<Cliente> { }
+    public interface IServiceCliente : IBaseService<Cliente>
+    {
+        Cliente GetByEmail(string email);
+    }
 }

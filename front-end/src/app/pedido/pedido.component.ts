@@ -35,8 +35,8 @@ export class PedidoComponent implements OnInit {
     if (CestaService.produtosCesta.length == 0) {
       alert("Nenhum produto adicionado a cesta");
       this.router.navigate(['/produtos']);
+    
     } else {
-
       var pedido = new Pedido();
       pedido.IdCliente = CestaService.cliente.Id;
       pedido.DataCriacao = new Date();
