@@ -46,10 +46,10 @@ export class CestaService {
 
         var prod = this.produtos.find(x => x.Id == cestaProduto.IdProduto);
         var indexProd = this.produtos.indexOf(prod);
-        this.produtos.splice(indexProd);
+        this.produtos.splice(indexProd, 1);
     
         var indexProd = this.produtosCesta.indexOf(cestaProduto);
-        this.produtosCesta.splice(indexProd);
+        this.produtosCesta.splice(indexProd, 1);
         
         this.qtdProdutos = this.produtosCesta.reduce((soma, pc) => soma + pc.Quantidade, 0);
 
