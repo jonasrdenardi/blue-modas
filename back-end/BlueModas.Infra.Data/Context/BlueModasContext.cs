@@ -13,8 +13,8 @@ namespace BlueModas.Infra.Data.Context
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<CestaProduto>()
-                .HasKey(x => new { x.IdCesta, x.IdProduto });            
-            
+                .HasKey(x => new { x.IdCesta, x.IdProduto });
+
             modelBuilder.Entity<PedidoProduto>()
                 .HasKey(x => new { x.IdPedido, x.IdProduto });
         }
@@ -25,5 +25,6 @@ namespace BlueModas.Infra.Data.Context
         public DbSet<Pedido> Pedido { get; set; }
         public DbSet<CestaProduto> CestaProduto { get; set; }
         public DbSet<PedidoProduto> PedidoProduto { get; set; }
+        public DbSet<Usuario> Usuario { get; set; }
     }
 }

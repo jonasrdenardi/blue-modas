@@ -1,12 +1,8 @@
 ﻿using BlueModas.Domain.Entities;
+using BlueModas.Domain.Interfaces;
 using BlueModas.Infra.CrossCutting.Authentication;
-using BlueModas.Infra.Data.Repository;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore.Metadata.Internal;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 
 namespace BlueModas.Api.Controllers
@@ -14,23 +10,22 @@ namespace BlueModas.Api.Controllers
     [Route("api/[controller]/[action]")]
     public class AutenticacaoController : ControllerBase
     {
+        IServiceUsuario _service;
+        public AutenticacaoController(IServiceUsuario service) => _service = service;
+
         [HttpPost]
         [AllowAnonymous]
-        public async Task<ActionResult<dynamic>> Login([FromBody] User model)
+        public async Task<ActionResult<dynamic>> Login([FromBody] Usuario model)
         {
-            var user = UserRepository.Get(model.UserName, model.Password);
+            var user = _service.GetByNomeSenha(model.Nome, model.Senha);
 
             if (user == null)
                 return NotFound(new { message = "Usuário ou senha inválido" });
 
             var token = TokenService.GenerateToken(user);
-            user.Password = "";
+            user.Senha = "";
 
-            return new
-            {
-                user = user,
-                token = token
-            };
+            return new { user, token };
         }
 
         [HttpGet]

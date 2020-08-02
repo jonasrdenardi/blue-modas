@@ -20,10 +20,7 @@ namespace BlueModas.Api.Controllers
     {
         private readonly IServicePedido _servicePedido;
 
-        public PedidoController(IServicePedido service)
-        {
-            _servicePedido = service;
-        }
+        public PedidoController(IServicePedido service) => _servicePedido = service;
 
         // GET: api/Pedido
         [HttpGet]

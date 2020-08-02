@@ -35,19 +35,13 @@ namespace BlueModas.Api
             services.AddTransient<IServiceProduto, ProdutoService>();
             services.AddTransient<IServiceCesta, CestaService>();
             services.AddTransient<IServicePedido, PedidoService>();
+            services.AddTransient<IServiceUsuario, UsuarioService>();
 
             services.AddTransient<IRepositoryCliente, ClienteRepository>();
             services.AddTransient<IRepositoryProduto, ProdutoRepository>();
             services.AddTransient<IRepositoryCesta, CestaRepository>();
             services.AddTransient<IRepositoryPedido, PedidoRepository>();
-
-            //services.AddCors(options =>
-            //{
-            //    options.AddPolicy("EnableCORS", builder =>
-            //    {
-            //        builder.WithOrigins("http://localhost:4200").AllowAnyOrigin().AllowAnyHeader().AllowAnyMethod().Build();
-            //    });
-            //});
+            services.AddTransient<IRepositoryUsuario, UsuarioRepository>();
 
             var key = Encoding.ASCII.GetBytes(Settings.Secret);
             services.AddAuthentication(x =>
@@ -91,10 +85,9 @@ namespace BlueModas.Api
                 .AllowAnyMethod()
                 .AllowAnyHeader()
             );
-            //app.UseCors("EnableCORS");
 
-            app.UseAuthorization();
             app.UseAuthentication();
+            app.UseAuthorization();
 
             app.UseEndpoints(endpoints =>
             {

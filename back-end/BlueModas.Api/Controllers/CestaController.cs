@@ -17,10 +17,7 @@ namespace BlueModas.Api.Controllers
     {
         private readonly IServiceCesta _serviceCesta;
 
-        public CestaController(IServiceCesta service)
-        {
-            _serviceCesta = service;
-        }
+        public CestaController(IServiceCesta service) => _serviceCesta = service;
 
         // GET: api/Cesta
         [HttpGet]
