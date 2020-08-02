@@ -1,22 +1,18 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using BlueModas.Domain.Interfaces;
+using BlueModas.Infra.CrossCutting.Authentication;
 using BlueModas.Infra.Data.Context;
 using BlueModas.Infra.Data.Repository;
 using BlueModas.Services.Services;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.HttpsPolicy;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.CodeAnalysis.Options;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
+using Microsoft.IdentityModel.Tokens;
 using Newtonsoft.Json.Serialization;
+using System.Text;
 
 namespace BlueModas.Api
 {
@@ -32,6 +28,7 @@ namespace BlueModas.Api
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddCors();
             services.AddControllers().AddNewtonsoftJson(options => {options.SerializerSettings.ContractResolver = new DefaultContractResolver();});
 
             services.AddTransient<IServiceCliente, ClienteService>();
@@ -44,13 +41,35 @@ namespace BlueModas.Api
             services.AddTransient<IRepositoryCesta, CestaRepository>();
             services.AddTransient<IRepositoryPedido, PedidoRepository>();
 
-            services.AddCors(options =>
-            {
-                options.AddPolicy("EnableCORS", builder =>
+            //services.AddCors(options =>
+            //{
+            //    options.AddPolicy("EnableCORS", builder =>
+            //    {
+            //        builder.WithOrigins("http://localhost:4200").AllowAnyOrigin().AllowAnyHeader().AllowAnyMethod().Build();
+            //    });
+            //});
+
+            var key = Encoding.ASCII.GetBytes(Settings.Secret);
+            services.AddAuthentication(x =>
                 {
-                    builder.WithOrigins("http://localhost:4200").AllowAnyOrigin().AllowAnyHeader().AllowAnyMethod().Build();
-                });
-            });
+                    x.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+                    x.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+                }
+            )
+            .AddJwtBearer(x =>
+                {
+                    x.RequireHttpsMetadata = false;
+                    x.SaveToken = true;
+                    x.TokenValidationParameters = new TokenValidationParameters
+                    {
+                        ValidateIssuerSigningKey = true,
+                        IssuerSigningKey = new SymmetricSecurityKey(key),
+                        ValidateIssuer = false,
+                        ValidateAudience = false
+                    };
+                }
+            );
+
             services.AddDbContext<BlueModasContext>(options => options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
             services.AddControllers().AddNewtonsoftJson();
         }
@@ -67,9 +86,15 @@ namespace BlueModas.Api
 
             app.UseRouting();
 
-            app.UseCors("EnableCORS");
+            app.UseCors(x => x
+                .AllowAnyOrigin()
+                .AllowAnyMethod()
+                .AllowAnyHeader()
+            );
+            //app.UseCors("EnableCORS");
 
             app.UseAuthorization();
+            app.UseAuthentication();
 
             app.UseEndpoints(endpoints =>
             {
